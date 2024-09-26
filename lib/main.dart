@@ -35,6 +35,14 @@ class _WeatherInfoFormState extends State<WeatherInfoForm> {
   String _weatherCondition = 'N/A';
 
   void _fetchWeather() {
+    // Check if the text field is empty
+    if (_controller.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a city name!')),
+      );
+      return; // Exit the function early if the field is empty
+    }
+
     // Generate random temperature between 15°C and 30°C
     Random random = Random();
     int temperature = random.nextInt(16) + 15; // Generates between 15 and 30
