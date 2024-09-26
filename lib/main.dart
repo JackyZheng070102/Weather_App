@@ -38,7 +38,7 @@ class _WeatherInfoFormState extends State<WeatherInfoForm> {
     // Generate random temperature between 15°C and 30°C
     Random random = Random();
     int temperature = random.nextInt(16) + 15; // Generates between 15 and 30
-    
+
     // Randomly select a weather condition
     List<String> conditions = ['Sunny', 'Cloudy', 'Rainy'];
     String condition = conditions[random.nextInt(conditions.length)];
