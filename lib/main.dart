@@ -1,21 +1,18 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'dart:math'; // Needed for the Random class
 
 void main() {
-  runApp(WeatherInfoApp());
+  runApp(MyApp());
 }
 
-class WeatherInfoApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Weather Info App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'Weather App',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Weather Info'),
+          title: Text('Weather App'),
         ),
         body: WeatherInfoForm(),
       ),
@@ -29,32 +26,25 @@ class WeatherInfoForm extends StatefulWidget {
 }
 
 class _WeatherInfoFormState extends State<WeatherInfoForm> {
-  final TextEditingController _controller = TextEditingController();
-  String _cityName = '';
-  String _temperature = 'N/A';
-  String _weatherCondition = 'N/A';
+  List<Map<String, String>> _weeklyForecast = [];
 
-  void _fetchWeather() {
-    // Check if the text field is empty
-    if (_controller.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a city name!')),
-      );
-      return; // Exit the function early if the field is empty
+  void _fetch7DayForecast() {
+    Random random = Random();
+    List<Map<String, String>> forecast = [];
+    List<String> conditions = ['Sunny', 'Cloudy', 'Rainy'];
+
+    for (int i = 0; i < 7; i++) {
+      int temperature = random.nextInt(16) + 15; // Random temperature
+      String condition = conditions[random.nextInt(conditions.length)];
+      forecast.add({
+        'day': 'Day ${i + 1}',
+        'temperature': '$temperature°C',
+        'condition': condition,
+      });
     }
 
-    // Generate random temperature between 15°C and 30°C
-    Random random = Random();
-    int temperature = random.nextInt(16) + 15; // Generates between 15 and 30
-
-    // Randomly select a weather condition
-    List<String> conditions = ['Sunny', 'Cloudy', 'Rainy'];
-    String condition = conditions[random.nextInt(conditions.length)];
-
     setState(() {
-      _cityName = _controller.text;
-      _temperature = '$temperature°C'; // Assigning the generated temperature
-      _weatherCondition = condition; // Assigning the randomly selected condition
+      _weeklyForecast = forecast;
     });
   }
 
@@ -64,22 +54,19 @@ class _WeatherInfoFormState extends State<WeatherInfoForm> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-              labelText: 'Enter City Name',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          SizedBox(height: 16.0),
           ElevatedButton(
-            onPressed: _fetchWeather,
-            child: Text('Fetch Weather'),
+            onPressed: _fetch7DayForecast,
+            child: Text('Fetch 7-Day Forecast'),
           ),
           SizedBox(height: 20.0),
-          Text('City: $_cityName', style: TextStyle(fontSize: 20)),
-          Text('Temperature: $_temperature', style: TextStyle(fontSize: 20)),
-          Text('Condition: $_weatherCondition', style: TextStyle(fontSize: 20)),
+          Column(
+            children: _weeklyForecast.map((dayForecast) {
+              return ListTile(
+                title: Text(dayForecast['day']!),
+                subtitle: Text('Temp: ${dayForecast['temperature']}, Condition: ${dayForecast['condition']}'),
+              );
+            }).toList(),
+          ),
         ],
       ),
     );
