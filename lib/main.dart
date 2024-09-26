@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -34,11 +35,18 @@ class _WeatherInfoFormState extends State<WeatherInfoForm> {
   String _weatherCondition = 'N/A';
 
   void _fetchWeather() {
-    // Placeholder for weather fetching logic
+    // Generate random temperature between 15°C and 30°C
+    Random random = Random();
+    int temperature = random.nextInt(16) + 15; // Generates between 15 and 30
+    
+    // Randomly select a weather condition
+    List<String> conditions = ['Sunny', 'Cloudy', 'Rainy'];
+    String condition = conditions[random.nextInt(conditions.length)];
+
     setState(() {
       _cityName = _controller.text;
-      _temperature = '25°C'; // Dummy value
-      _weatherCondition = 'Sunny'; // Dummy value
+      _temperature = '$temperature°C'; // Assigning the generated temperature
+      _weatherCondition = condition; // Assigning the randomly selected condition
     });
   }
 
@@ -69,4 +77,3 @@ class _WeatherInfoFormState extends State<WeatherInfoForm> {
     );
   }
 }
-
